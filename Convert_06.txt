@@ -1,0 +1,103 @@
+-----------------------------------------------
+Form_Load: Position
+Form_QueryUnload: RemoveHandler
+Check CheckBox Change
+Check 
+    For Loop
+    While Loop
+    llngRowCnt/ llngCnt
+Remove comment NONAME:
+    Click + Keydown:
+    Validate + FormActive + LoadQuery + EnterCell
+Format date
+
+(1) => (0)
+
+'@ﾌｫｰﾑﾛｯｸ
+'Me.Enabled = False
+
+    RowColChange
+-----------------------------------------------
+Form:
+    1001, 681
+    Up
+    'NONAME 表示位置設定
+    StartPosition = FormStartPosition.Manual
+    Top = 0
+    Left = 0
+
+                RemoveHandler MyBase.FormClosing, AddressOf Form_QueryUnload           '@NONAME 閉じる処理抜け
+                Call cmdClose_Click(sender, e)
+                AddHandler MyBase.FormClosing, AddressOf Form_QueryUnload
+AllCells
+-----------------------------------------------
+If IsNumeric(.strLimitTime) = True Then
+    lblTimeLimit.Text = Replace(Format(CLng(.strLimitTime), CPstrDateFormatKanma), CPstrReplaceMinus, vbNullString) & CPstrh
+Else
+    lblTimeLimit.Text = .strLimitTime
+End If
+
+If IsDate(.strDispatchStartTime) = True Then
+    lblStartDayTime.Text = Format$(ｓ.strDispatchStartTime), CPstrDateFormat)  '投入予定日"mm/dd hh:mm:ss"
+Else
+    lblStartDayTime.Text = .strDispatchStartTime
+End If
+
+If IsNumeric(.strChipQuantity) Then
+    lblChipQuantity.Text = Format$(CLng(.strChipQuantity), CPstrDateFormatKanma)   'ﾁｯﾌﾟ数
+Else
+    lblChipQuantity.Text = .strChipQuantity
+End If
+-----------------------------------------------
+    'NONAME ちらつき防止
+    Call pubSetFocus(txtComments)
+    SendKeys.SendWait("^({HOME})")
+    
+-------------------------------------------------------Setting position of loaded form
+    .Clear                          'ｸﾘｱ
+    .AllowSorting = AllowSortingEnum.None
+    .Rows.Count = 1                       '初期行数：1
+    'CMT .FillStyle = flexFillRepeat     '選択単位：行
+    'CMT .AllowBigSelection = False      'ﾀｲﾄﾙ行ｸﾘｯｸでの全列選択：不可
+    'CMT .AllowSelection = False         'ﾏｳｽでｾﾙ範囲選択：不可
+    .SelectionMode = SelectionMode.None
+    
+    '@ﾀｲﾄﾙ行の文字色、背景色の設定
+    .Select(CMlngVsfRowTitle, CMlngvsfColNo, CMlngVsfRowTitle, .Cols.Count - 1)
+    .ForeColor = Color.Yellow 'vbYellow                                                             '文字色
+    .BackColor = ColorTranslator.FromWin32(CPlngBlueColor)                                          '背景色
+    .Font= New Font(CMstrCmbFontName, CType(CMlngVsfHFontSize, Single))          'ﾌｫﾝﾄｻｲｽﾞ
+    
+	Call vsfBatList_EnterCell(vsfBatList, New EventArgs)
+                    
+                    
+    .Sort = flexSortNone            'ｿｰﾄ：不可
+    .FillStyle = flexFillRepeat     '選択単位：行
+    .AllowBigSelection = False      'ﾀｲﾄﾙ行ｸﾘｯｸでの全列選択：不可
+    .AllowSelection = False         'ﾏｳｽでｾﾙ範囲選択：不可
+    
+    '@ﾀｲﾄﾙ行の文字色、背景色の設定
+    .CellForeColor = vbYellow              '文字色
+    .CellBackColor = CPlngBlueColor        '背景色
+    .CellFontSize = CMlngVsfHFontSize      'ﾍｯﾀﾞｰﾌｫﾝﾄｻｲｽﾞ
+    
+-------------------------------------------------------Calendar Ex
+    
+With calManuDate
+    .CalendarHeight = CPlngClHeight
+    .CalendarWidth = CPlngClWidth
+    '.DayFont.Size = CPlngClFontSize
+    .DayFont = New Font(.DayFont.FontFamily, CPlngClFontSize, .DayFont.Style, .DayFont.Unit)
+    '.TitleFont.Size = CPlngClTlFontSize
+    .TitleFont = New Font(.TitleFont.FontFamily, CPlngClTlFontSize, .TitleFont.Style, .TitleFont.Unit)
+    '.GridFont.Size = CPlngClGridFontSize
+    .GridFont = New Font(.GridFont.FontFamily, CPlngClGridFontSize, .GridFont.Style, .GridFont.Unit)
+End With
+
+-------------------------------------------------------Handle Validate
+'NONAME 画面を閉じる場合は処理を抜ける
+	If Me.ActiveControl Is cmdClose Or mblnWindowClose = True Then
+		Exit Sub
+	End If
+-------------------------------------------------------
+

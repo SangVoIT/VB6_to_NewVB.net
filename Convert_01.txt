@@ -1,0 +1,133 @@
+FormClosedEventArgs
+ADD/REMOVE EVENT
+Background Color
+Keys.Back Clear
+ToolStripStatusLabel1
+ColDataType
+Radio Button
+Transaction
+Erase LIST
+Font - GridFont
+HEADER HEIGHT
+txtComments/Property
+GetCellCheck
+
+-------------------------------------- FormClosedEventArgs ---------------------------------------------
+    FormClosedEventArgs (x) => FormClosingEventArgs
+    .Cancel = True (x) => .Cancel = True
+
+-------------------------------------- ADD/REMOVE EVENT ---------------------------------------------
+    RemoveHandler optCollectionType1.CheckedChanged, AddressOf optCollectionType_Click
+    AddHandler optCollectionType0.CheckedChanged, AddressOf optCollectionType_Click
+
+-------------------------------------- Background Color -------------------------------------------
+    newStyle.BackColor =  vbBlue (X) =>    newStyle.BackColor =  Color.Blue
+    ForeColor = vbWhite (X) => ForeColor = Color.White
+
+    vbRightJustify                      ContentAlignment.TopRight
+    
+    CPlngDeleteLineColor => ColorTranslator.FromWin32(CPlngDeleteLineColor)
+    CPlngUpdateColor => ColorTranslator.FromWin32(CPlngUpdateColor)
+-------------------------------------- Keys.Back Clear ---------------------------------
+CType(.Editor, TextBox).Clear()
+    Gridview:
+    '   If e.KeyCode = Keys.Back AndAlso (TypeOf .Editor Is TextBox)
+    '       CType(.Editor, TextBox).Clear()
+    With CType(sender, C1FlexGrid)
+        ---
+    End With
+    
+-------------------------------------- ToolStripStatusLabel1 ---------------------------------
+    stsWS.Panels(1).Text = "" (x) => ToolStripStatusLabel1.Text = ""
+    stsWS.Panels(1) = Format(Now, CPstrDateFormatHMS) & CPstrMarkSts (X) => 
+    ToolStripStatusLabel1.Text = CPstrSpace & Format(Now, CPstrDateFormatHMS) & CPstrMarkSts 
+    
+-------------------------------------- ColDataType ---------------------------------
+    .ColDataType(Col)                                 .Cols(e.Col).DataType
+    flexDTDouble                                       GetType(System.Double)
+    flexDTLong, flexDTCurrency                         GetType(System.Int32), GetType(System.Decimal)
+    flexDTString                                       GetType(System.String)
+    flexDTDate                                         GetType(System.DateTime)
+    
+-------------------------------------- Radio Button ---------------------------------
+Radio Button:
+    chkApply.Value = 1 => chkApply.Checked = True
+    chkApply.Value = 0 => chkApply.Checked = False
+
+-------------------------------------------------------------------------------------------------
+Select Box:
+    optCollectionType(CPlngCollectionType0).Value = True
+    sender.Name = "optCollectionType0"
+    optCollectionType0.Checked = True
+
+-------------------------------------- Transaction ---------------------------------
+    pobjOradb.BeginTrans
+    Call pubBeginTrans()
+
+    pobjOradb.CommitTrans
+    Call pubCommitTrans()
+
+    pobjOradb.RollBack
+    Call pubRollBackTrans()
+
+-------------------------------------- Erase LIST  ---------------------------------
+    Erase lvrnWpData    (X)  =>  
+    lvrnWpData = nothing or 
+    If IsNothing(lvrnWpData) Then
+        lvrnWpData = New List(Of ObjectArray)()
+    Else
+        lvrnWpData.Clear()
+    End If
+
+-------------------------------------- Font - GridFont  ---------------------------------
+    Private Const CMstrCmbFontName              As String  = "ＭＳ ゴシック"   'NSYS FontName
+    
+    .Font.Size = CMlngCmbFontSize                               'ﾌｫﾝﾄｻｲｽﾞ (X) =>
+    .Font= New Font(CMstrCmbFontName, CType(CMlngCmbFontSize, Single))          'ﾌｫﾝﾄｻｲｽﾞ
+
+    .GridFont.Size = CMlngCmbGridFontSize                       'ｸﾞﾘｯﾄﾞﾌｫﾝﾄｻｲｽﾞ (X) =>
+    .Font= New Font(CMstrCmbFontName, CType(CMlngCmbFontSize, Single))          'ﾌｫﾝﾄｻｲｽﾞ
+    .GridFont = New Font(CMstrGridFontName, CType(CMlngCmbGridFontSize, Single)) 'ｸﾞﾘｯﾄﾞﾌｫﾝﾄｻｲｽﾞ
+
+-------------------------------------- HEADER HEIGHT-------------------------------------
+    Private Const CMvsfCategoryListHdHeight As Integer = 27            '行の高さ(ﾍｯﾀﾞｰのみ)
+    
+    'NSYS ヘッダーの高設定
+    if (vsfCategory.Rows.Count >= 1) Then 
+        vsfCategory.Rows(0).Height = CMvsfCategoryListHdHeight
+    End If
+    
+-------------------------------------- txtComments/Property ---------------------------------------------
+    txtComments + lblCount => public properites
+    
+    txtComments.SelectionStart = 0
+    txtComments.SelectionLength = 0
+    
+    txtComments.Locked = True   (x) =>  txtComments.ReadOnly = True
+
+-------------------------------------------------------------------------------------------------
+    vsfCategory.BeforeEdit (x) =>     vsfCategory.StartEdit || vsfCategory.SetupEditor
+    
+    'vsfOvertake.AutoSizeCols(CMvsfOvertakeType, CMvsfOvertakeEmpID, False, 0, 6) (x) =>  
+    vsfOvertake.AutoSizeCols(CMvsfOvertakeType, CMvsfOvertakeEmpID, 6)
+    
+    UBound(pstrAryCtgryWP, 2)   (x) =>  pstrAryCtgryWP.Count - 1
+    flexAlignLeftCenter         (x) =>  TextAlignEnum.LeftCenter
+    
+    Select Case e.Col
+        .EditMaxLength = CMlngMaxLenNumber (x) => 
+        CType(.Editor, Object).MaxLength = CMlngEditMaxLength30
+        
+    mstrOldGridEditorText = .GetData(e.Row, e.Col)   'または .GetDataDisplay
+    
+-------------------------------------------------------------------------------------------------
+    '@ﾊﾟﾗﾒｰﾀﾘｽﾄ配列再定義
+    Dim mtypParameter As Parameter = mtypParameterListData(mlngParameterListDataIndex)
+
+    '@ﾊﾟﾗﾒｰﾀﾘｽﾄ配列再定義
+    Dim lobjMyObject As ...
+    lobjMyObject = mtypParameterListData(mlngParameterListDataIndex)
+    
+--------------------------------------------------------GetCellCheck
+    vbChecked (x) => 
+    CheckEnum.Checked

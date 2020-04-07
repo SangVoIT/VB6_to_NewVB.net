@@ -1,0 +1,60 @@
+Set Text
+Setting Btn Close
+Height Size Convet
+Height Size Convet
+Setting position of loaded form
+
+------------------------------------------------------- Set Text
+	CP_Alpha_Num　（ｘ）　＝＞
+	SETextBoxEx.TextBoxEx.typFormatMode.CP_Alpha_Num
+	CP_Upper　（ｘ）　＝＞
+	SETextBoxEx.TextBoxEx.typLowerUpper.CP_Upper
+
+------------------------------------------------------- Setting Btn Close
+    '@ﾌｫｰﾑﾛｰﾄﾞ中にEscﾎﾞﾀﾝを押させない
+    cmdClose.Cancel = False　（ｘ）　＝＞
+    Me.CancelButton = Nothing
+
+    '@Escﾎﾞﾀﾝを有効にする
+    cmdClose.Cancel = True　（ｘ）　＝＞
+    Me.CancelButton = cmdClose
+    
+-------------------------------------------------------Height Size Convet
+	15             1
+-------------------------------------------------------Setting position of loaded form
+    'NONAME 表示位置設定
+    StartPosition = FormStartPosition.Manual
+    Top = 0
+    Left = 0 
+    ' - My.Settings.FormOffset
+    
+-------------------------------------------------------Setting position of loaded form
+    .Cell(flexcpAlignment, CMlngvsfRowTitle, CMlngvsfColTitle, .Rows.Count - 1, .Cols.Count - 1) = flexAlignCenterCenter(x) =>
+    lFixedStyle.TextAlign = TextAlignEnum.CenterCenter 
+    
+    .Cell(flexcpSort, .Rows.Fixed, mtypChgSort.typChgSortList(llngCnt).lngCol, .Rows.Count - 1) = mtypChgSort.typChgSortList(llngCnt).lngOrder(x) =>
+    .Sort(mtypChgSort.typChgSortList(llngCnt).lngOrder, mtypChgSort.typChgSortList(llngCnt).lngCol)
+    
+    .RowHeight(CMlngvsfRowTitle) = CMlngvsfHHeight (x) =>
+    .Rows(CMlngvsfRowTitle).Height = CMlngvsfHHeight
+    
+    .FrozenCols = CMlngvsfFrozenCols(x) =>
+    .Cols.Frozen = CMlngvsfFrozenCols 
+    
+    .AllowUserResizing = flexResizeColumns (x) =>
+    .AllowResizing = AllowResizingEnum.Columns
+        
+    .Ellipsis = flexEllipsisEnd (x) =>
+    .Styles.Normal.Trimming = StringTrimming.EllipsisCharacter
+    
+---------------------------------------------------------------------------------------
+	.SetData(llngDoCnt, CMlngvsfLotListColEntryName, ltypOpLotLst(llngDoCnt).strEntryName)
+
+	.SetData(llngDoCnt, CMlngvsfLotListColEntryName, ltypOpLotLst(llngDoCnt -1).strEntryName)
+
+
+	.Cell(flexcpBackColor, llngDoCnt, CMlngvsfLotListStartCol, llngDoCnt, .Cols.Count - 1) _
+		= CPlngRColor  
+	cellRangeL = .GetCellRange(llngDoCnt, CMlngvsfLotListStartCol, llngDoCnt, .Cols.Count - 1)
+	cellRangeL.Style = newStyleL   
+---------------------------------------------------------------------------------------

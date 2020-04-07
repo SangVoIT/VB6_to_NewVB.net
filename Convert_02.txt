@@ -1,0 +1,182 @@
+RESET GRIDVIEW
+Addline
+Tip for copy line
+Show_Hidden Column
+SELECT RANGE
+Enable 全角
+ACCESS ON GRIDVIEW
+HANDLE ROW/COL
+Handle Remove-Proc
+
+//// Function
+KEYDOWN Tab check - (Form_KeyDown)
+Turn-back Horizontal Bar
+Counting Vertical Scrollbar Height
+ESC On ComboBox - (Grid_KeyDownEdit)
+Show Tooltip Open dialog
+Handle ComboCloseUp
+
+------------------------------------------- RESET GRIDVIEW
+    '@再描画停止
+    vsfOvertake.Redraw = False                 '行わない
+    vsfOvertake.Clear(ClearFlags.UserData)
+    '@正常にデータが取得できたのでGUI上のリストをクリア
+    vsfOvertake.Rows.Count = 1
+    vsfOvertake.Row = 0
+    vsfOvertake.TopRow = 0
+    
+    '@再描画実行
+    vsfOvertake.Redraw = True           '行う
+------------------------------------------- Addline
+    .Row = .Rows.Count - 1
+    .TopRow = .Rows.Count - 1
+------------------------------------------- Tip for copy line
+    '@貼り付け
+    For llngCol = CMlngvsfCollectListCCollectID To .Cols.Count - 1
+        .SetData(.Rows.Count - 1, llngCol, .GetData(llngRow, llngCol))
+    Next
+------------------------------------------- Show_Hidden Column
+    .ColHidden(CMlngvsfParameterListClassification4Col) = False    'ﾃﾞｰﾀ分類4 (X) =>
+    .Cols(CMlngvsfParameterListClassification4Col).Visible = True      'ﾃﾞｰﾀ分類4
+--------------------------- SELECT RANGE---------------------------------------------
+    '@選択範囲を取得 
+    .GetCellRange llngStartRow, llngStartCol, llngEndRow, llngEndCol) (x) => 
+    '@選択範囲を取得
+    llngStartRow = .Selection.TopRow
+    llngEndRow = .Selection.BottomRow
+    llngStartCol = .Selection.LeftCol
+    llngEndCol = .Selection.RightCol
+
+------------------------- Enable 全角 -------------------------
+    FormatMode = CP_Hankaku
+    ImeMode = Disable
+    
+--------------------------- ACCESS ON GRIDVIEW---------------------------------------------
+    ' MERGING
+    .MergeCells = flexMergeRestrictColumns (x) =>
+    .AllowMerging = C1.Win.C1FlexGrid.AllowMergingEnum.RestrictCols 'RestrictRows
+    .MergeCol(CPlngvsfConDetailListWpNmCol) = True (x) =>
+    .Cols(CPlngvsfConDetailListWpNmCol).AllowMerging = True
+
+    ' TEXT_ALIGN
+    .ColAlignment(0) = flexAlignLeftCenter (x) =>
+    .Cols(0).TextAlign = TextAlignEnum.LeftCenter
+    
+    ' RESIZING
+    .AllowUserResizing = flexResizeColumns (X) =>
+    .AllowResizing = AllowResizingEnum.Columns              '列のﾘｻｲｽﾞ可能
+
+    ' SORTING
+    ColSort(CMvsfOvertakePd) = flexSortStringAscending (x) =>
+    .Cols(CMvsfOvertakePd).Sort = flexSortStringAscending
+    
+    ' CLEAR TEXT
+    .Clear flexClearScrollable, flexClearText (x) =>
+    .Clear(ClearFlags.UserData)
+
+    ' CLEAR TEXT
+    .Editable = flexEDNone (x) =>
+    .AllowEditing = False
+
+--------------------------- HANDLE ROW/COL ---------------------------------------------
+    'Cursor on Row
+    .RowPosition(llngRowStart - 1) = llngRowEnd (x) =>
+    .Rows.Move(llngRowStart -1, llngRowEnd) OR
+    .Rows(llngRowStart - 1).Move(llngRowEnd)
+    
+    '@表示/非表示
+    .RowHidden(llngRow) = False (x) => .Rows(llngRow).Visible = True
+    .RowHidden(llngRow) = True (x) => .Rows(llngRow).Visible = False
+    
+    ' Delete Row:
+    .RemoveItem(.Row)
+    
+    ' Set Focus (Cell)
+    .setFocus (x) => .Focus()
+    
+    'FrozenCols (Col)
+    .FrozenCols = 2       (x) =>  .Cols.Frozen = 2
+    
+    ' FindRow by Text
+    FindRow(検索文字列, .Rows.Fixed, 列番号, (wrap=)False) (X) => 
+    llngFindResult = .FindRow(lstrSelectedArray(llngCnt), .Rows.Fixed, CMlngvsfCollectParaListCParaID, False) 
+    llngFindResult = .FindRow(lstrSelectedArray(llngCnt), .Rows.Fixed, CMlngvsfCollectParaListCParaID, True, True, False)
+
+--------------------------- Handle Remove-Proc ---------------------------------------------
+    vsfCollectList_EnterCell
+    vsfCollectList_BeforeEdit
+    vsfCollectList_MouseDown
+    vsfCollectList_BeforeRowColChange
+    ' vsfCollectList_Validate
+    ' Keydown
+
+    'NONAME データ行がない場合は処理を抜ける
+    If vsfCollectList.Rows.Count <= vsfCollectList.Rows.Fixed Then
+        Return
+    End If
+
+--------------------------- KeyDown on Form - Tab check ---------------------------------------------
+            If ActiveControl.Name <> vsfCategory.Name AndAlso _
+                ActiveControl IsNot vsfPartsList.Editor  Then    
+                
+------------------------------------------------------- Turn-back Horizontal Bar
+    'NONAME 先頭行を選択、かつ、Selectを行うと左右スクロールが移動するので位置を復元する
+    With vsfParaList
+        Dim llngScrollX As Integer  '元のスクロールのX位置
+        Dim lobjPoint   As Point    'ScrollPosition
+        'スクロール位置保存
+        llngScrollX = .ScrollPosition.X
+        '選択
+        .Select(.Row, .Col)
+        'スクロール位置復元
+        lobjPoint = .ScrollPosition
+        lobjPoint.X = llngScrollX
+        .ScrollPosition = lobjPoint
+    End With
+
+
+------------------------------------------------------- Counting Vertical Scrollbar Height
+    'NONAME スクロール位置を記録
+    llngDiffRowHeight = 0
+    lobjScrollPos = .ScrollPosition
+
+    .Redraw = False
+    
+    ' + - 
+    .Rows(llngRow).Visible = False
+    'NONAME スクロール量を計算する
+    If llngRow < .TopRow - 1 Then
+        llngDiffRowHeight -= .Rows(llngRow).HeightDisplay
+    End If
+    
+    .Redraw = True
+
+    'NONAME スクロール位置をVB6版互換位置で設定。Redraw=Trueでないと、下端で短くなる方向の時に正確に設定できない
+    lobjScrollPos.Y = lobjScrollPos.Y - llngDiffRowHeight
+    .ScrollPosition = lobjScrollPos
+------------------------- ESC On ComboBox ------------------------- (Hook, vsfPartsMng_KeyPressEdit)
+// Grid_KeyDownEdit: Focus out Grid
+    Case Keys.Escape  '[ESC]ｷｰ押下
+        Dim editor As Object = CType(.Editor, Object)
+        ' 編集不可のコンボボックスの場合はそのまま隣へ
+        If (TypeOf editor Is ComboBox AndAlso _
+            CType(editor, ComboBox).DropDownStyle = ComboBoxStyle.DropDownList) OrElse _
+            (editor.SelectionStart = 0 AndAlso editor.SelectionLength = 0) Then
+            e.Handled = True
+        End If
+        
+-------------------------------------------------------Show Tooltip Open dialog
+    Me.mnu6.Show(Cursor.Position)      'ｶﾃｺﾞﾘ変更 (MNU000)
+    Private Sub mnu6_Click(ByVal sender As Object, ByVal e As EventArgs) Handles mnu6.Opening
+        
+    '@ﾌｫｰﾑを表示
+    MfrmxxENA600.Instance.ShowDialog(Me)
+
+-------------------------------------------------------Handle ComboCloseUp
+'①ComboCloseUp処理でフラグを立てている
+Private Sub Grid_ComboCloseUp(ByVal sender As Object, ByVal e As EventArgs) Handles Grid.ComboCloseUp
+
+      'KeyPressEdit処理を抜けるフラグを立てている
+      Cancel_Flg = True
+
+End Sub

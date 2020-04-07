@@ -1,0 +1,160 @@
+Form PROPERTIES
+SETUP for new File
+Keydown on Gridview - Editing
+------------------------------------------------------- Form PROPERTIES
+    1,
+        FixedSingle
+        Fixed3D:
+        None
+    2, 
+        TextBox + ComboBox: Height of them is the same size
+    
+    3, Gridview
+        3.1
+        Autoresize
+        AllowResezing
+        SelectionMode
+        BorderStyle: FixedSingle
+        
+        3.2
+        TextAlign
+        Trimming Header
+        Trimming Editor
+        
+        3.3 Data on grid
+        Datetype
+        Data format
+    
+    4, CheckBox, Groupbox Name: Font Size = 9
+    
+    
+        
+------------------------------------------------------- Setup for new File
+    1, 
+        Me.Enabled = True
+        '@ﾌｫｰﾑの初期化
+        MfrmxxENU000.Instance = Nothing
+        => 削除
+    
+    2,
+        'NONAME 静的イベントハンドラ解除
+        RemoveHandler System.Windows.Forms.Application.Idle, AddressOf Application_Idle
+        => Query-Unload: 追加
+    
+    3, Which is needed type loop
+        For (1-n); For 0 - n
+    
+    4, Check
+        .SetData(.Row, CMvsfOvertakeEntryTime, vbNullString) (x) =>
+        .GetData(.Row, CMvsfOvertakeEntryTime) = vbNullString
+        
+    5, Check Handle
+        vsfCollectList_EnterCell
+        vsfCollectList_BeforeEdit
+        vsfCollectList_MouseDown
+        vsfCollectList_BeforeRowColChange
+        ' vsfCollectList_Validate
+        ' Keydown
+
+        'NONAME データ行がない場合は処理を抜ける
+        If vsfCollectList.Rows.Count <= vsfCollectList.Rows.Fixed Then
+            Return
+        End If
+        
+    6, 
+        Console.WriteLine("Function: FunctionName" )
+    
+    7, Setting
+        - ComboBox 
+        CType(sender, C1FlexGrid).Styles.Editor.Trimming = StringTrimming.None
+
+        - Keydown on grid
+        
+    8, Autosize: 
+        Gridview Combobox: -11
+        Gridview TextBox: 6
+        
+-------------------------------------------------------Keydown on Gridview - Editing
+vsfCollectList_KeyDown
+        Select Case e.KeyCode
+            Case Keys.Return, Keys.Space, Keys.f2  '[RETRUN][ENTER][F2]ｷｰ
+                '@ｷｰｺｰﾄﾞ変更
+                e.Handled = True
+                e.SuppressKeyPress = True
+                '@選択ｾﾙを編集可能にする
+                .Select(llngWkRow, llngWkCol)
+                .StartEditing()
+            Case Keys.Delete, Keys.Back     'Delete/BackSpaceｷｰの場合
+                .Styles.Editor.BackColor = SystemColors.Window
+                .StartEditing()       '編集ﾓｰﾄ
+                '@Nullにする
+                If TypeOf .Editor Is TextBox Then
+                    CType(.Editor, TextBox).Clear()
+                End If
+            Case Keys.Up, Keys.Down, Keys.Left, Keys.Right, Keys.PageUp, Keys.PageDown '[↓][↑][→][←][PageUp][PageDown]ｷｰ
+            Case Else
+                '@編集状態にする
+                .StartEditing()
+                .ShowCell(.Row, .Col)
+                If e.KeyCode = Keys.Back AndAlso (TypeOf .Editor Is TextBox)
+                    CType(.Editor, TextBox).Clear()
+                End If
+        End Select
+
+-------------------------------------------------------Keydown on Gridview - Editing
+txtWorkMemo_KeyUp
+    EventArgs -> KeyEventArgs
+    
+txtWorkMemo_MouseUp
+    EventArgs ->MouseEventArgs
+    
+
+-------------------------------------------------------Keydown on Gridview - Editing
+RangeEventArgs
+	OldRow          e.OldRange.r1
+	NewRow          e.NewRange.r1
+-------------------------------------------------------Keydown on Gridview - Editing
+	flexFocusNone               (x) =>
+	FocusRectEnum.None
+	flexSortGenericAscending    (x) =>
+	SortFlags.Ascending
+
+-------------------------------------------------------Keydown on Gridview - Editing
+    'NONAME BeforeRowColChangeイベントを抑止し、ボタンの状態変更やｿｰﾄ検索用ｷｰ設定を抑える
+    RemoveHandler vsfResvLotList.BeforeRowColChange, AddressOf vsfResvLotList_BeforeRowColChange
+    
+-------------------------------------------------------Keydown on Gridview - Editing
+    '@ｽﾃｰﾀｽ画面色設定用
+    Private ReadOnly vbButtonFace                       As Color = SystemColors.ControlLight    ' NONAME vbButtonFace定義
+    rivate ReadOnly CMlngStForeColor                    As Color = Color.Black                  ' 文字色（黒）
+    
+    vbWindowBackground                                  SystemColors.Window
+    
+    
+    'NONAME VB6ではこの時点で ActiveControl は Nothing だが、.NETで Nothing にすると
+    '     どこにもフォーカスがない状態になるので、明示的に cmdExpandボタンにセットする
+    Me.ActiveControl = cmdExpand
+
+    'NONAME 静的イベントハンドラ追加
+    AddHandler System.Windows.Forms.Application.Idle, AddressOf Application_Idle
+
+-------------------------------------------------------Keydown on Gridview - Editing
+    cmdSize.Picture = picMax.Picture (x) =>
+    cmdSize.Image = picMax.Image
+    
+    cmdExpand.Picture = picMenuBarChar1.Picture (x) =>
+    cmdExpand.BackgroundImage = picMenuBarChar1.Image 
+    
+    tabMenu.Tab = CPlngMenuTabFavorites (x) =>
+    tabMenu.SelectedIndex = CPlngMenuTabFavorites
+    
+    e.KeyCode = Keys.F4 And Shift = 4 (x) =>
+    e.KeyData = (Keys.F4 Or Keys.Alt) 
+    
+    For llngCnt = 0 To Forms.Count - 1 (x) =>
+    Forms(llngCnt).Name (x) =>
+    For llngCnt = 0 To Application.OpenForms.Count - 1
+    Application.OpenForms(llngCnt).Name 
+    
+    mintButton = 2 (x) =>
+    mintButton = MouseButtons.Right

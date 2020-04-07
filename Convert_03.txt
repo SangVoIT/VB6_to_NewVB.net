@@ -1,0 +1,104 @@
+STRING FUNCTION 
+CHECK Value
+FORMAT - CONVERT
+ComboList (Dictionary)
+KEY - OBJECT
+Check processing of Radiobutton (Two Radio)
+lhwnd - Browser
+Handle Validate
+------------------------------------------- STRING FUNCTION ---------------------------------------------
+    Right(x) => Strings.Right
+    Left(x) => Strings.Left
+    
+    '@/変換：　全角　⇔　半角
+    lstrChangeString = StrConv(lstrChangeString, vbNarrow)    '[半角] (vbNarrow), [全角] (vbWide)、　「カタカナ」　Katakana、　「適当」　ProperCase
+    Lowercase, vbUpperCase
+            
+------------------------------------------- Check Value ---------------------------------------------
+    Nv(objary.obj(0)) => If ( <> vbNullString) ... else ...
+
+    // Check is Numeric
+    If IsNumeric(vsfPartsList.GetData(llngCnt, CMlngvsfPartsListWar1ValCol)) = False Then ... Else ... End If
+    
+    // Check is Double
+    Dim ldoubleTmp As Double
+    If Double.TryParse(strAimValue, ldoubleTmp) = True Then ... Else ... End If
+    
+------------------------------------------- FORMAT - CONVERT---------------------------------------------
+    Format(DateTime.Parse("2020/01/14 15:22:15"), CPstrDateTimeYMDHM)
+    Format(DateTime.Parse("2020/01/14 15:22:15"), CPstrDateTimeYMDHMS)
+    
+    ' Format double
+    Format(Val(strRevisionValue), CMstrDoubleFormatString)
+    ' Check digital number
+    prvlngIsDigit(vsfCategory.GetData(lngCheckLineNo, CMvsfCategoryNo)) = False
+
+    ' Get format date
+    If IsNothing(strEntryTime) = False Then
+        vsfPrismApc.SetData(lngLineNo,CMvsfPrismApcEntryTime,Format(DateTime.Parse(strEntryTime), CPstrDateTimeYMDHM))
+    Else
+        vsfPrismApc.SetData(lngLineNo,CMvsfPrismApcEntryTime,vbNullString)
+    End If
+    
+    System.Text.Encoding.GetEncoding("Shift_JIS").GetByteCount(str) (LenB())
+    
+    ' Convert: Long
+    CLng()
+
+------------------------------------------- ComboList (Dictionary) -------------------------------------------
+ColComboList:  
+    vsfCategory.ColComboList(CMvsfCategoryCategory) = mstrSelectCategory
+    => 
+    Imports System.Collections.Specialized
+    Dim lstrColComboList    As ListDictionary 'ｺﾝﾎﾞﾘｽﾄ
+    lstrColComboList = New ListDictionary()
+    lstrColComboList.Add(0,CMstrCateNameRyouhin)
+    lstrColComboList.Add(1,CPstrPipeString)
+    lstrColComboList.Add(2,CMstrCateNameFuryou)
+    lstrColComboList.Add(3,CPstrPipeString)
+    lstrColComboList.Add(4,CMstrCateNameKeiko)
+    vsfCategory.Cols(CPlngDataStateCol).DataMap = lstrColComboList
+    
+------------------------------------------- KEY - OBJECT -------------------------------------------
+    MouseButtons.Right
+    TextAlignEnum.LeftCenter
+    Cursor.Current = Cursors.WaitCursor
+    editor.BackColor = Color.White
+    editor.BackColor = ColorTranslator.FromWin32(CPlngUpdateColor)
+    editor.BackColor = Color.FromArgb(192, 192, 255)
+    CellStyle、CellRange、HitTestTypeEnum.ColumnResize
+                
+------------------------------------------- Check Radiobutton -------------------------------------------
+    'NONAME CheckedがTrueになる方とFalseになる方の両方のRadioButtonでCheckedChangedイベントが同時に発生するため、Trueの方のみ拾う
+    If sender.Checked = False Then
+        Exit Sub
+    End If
+
+------------------------------------------- lhwnd - Browser -------------------------------------------
+    Dim lhwnd           As IntPtr 'NONAME ｳｨﾝﾄﾞﾊﾝﾄﾞﾙ
+    ' NONAME IEｵﾌﾞｼﾞｪｸﾄのｳｨﾝﾄﾞﾊﾝﾄﾞﾙを変換
+    If IntPtr.Size = 8 Then
+        lhwnd = Convert.ToInt64(CType(lobjIE,SHDocVw.InternetExplorer).hwnd)
+    Else If IntPtr.Size = 4 Then
+        lhwnd = Convert.ToInt32(CType(lobjIE,SHDocVw.InternetExplorer).hwnd)
+    End If
+    
+    lstrNavigate = vbNullString
+        .Navigate(lstrNavigate)
+
+------------------------------------------- Handle Validate -------------------------------------------
+    '@ｺｰﾄﾞで呼び出さないValidateｲﾍﾞﾝﾄは処理しない
+    If e.Cancel = False Then
+        Exit Sub
+    End If
+
+------------------------------------------- RegularExpressions -------------------------------------------
+    'NONAME IDictionary化
+    Dim lstrColComboList As New ListDictionary
+    For Each pair As String In Split(lstrWPProcessingCmbList, "|")
+        Dim m As System.Text.RegularExpressions.Match = System.Text.RegularExpressions.Regex.Match(pair, "#([^;]+);([^|]+)")
+        If m.Success Then
+            lstrColComboList.Add(CLng(m.Groups(1).Value), m.Groups(2).Value)
+        End If
+    Next
+    vsfPrismApc.Cols(CMvsfPrismApcChamber).DataMap = lstrColComboList
