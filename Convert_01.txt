@@ -1,16 +1,18 @@
-FormClosedEventArgs
-ADD/REMOVE EVENT
-Background Color
-Keys.Back Clear
-ToolStripStatusLabel1
-ColDataType
-Radio Button
-Transaction
-Erase LIST
-Font - GridFont
-HEADER HEIGHT
-txtComments/Property
-GetCellCheck
+// Create date: 20200501
+// Create user: SANG VO
+Handle: "FormClosedEventArgs" event
+Handle: ADD/REMOVE EVENT
+Handle: Background Color
+Handle: Keys.Back Clear
+Handle: ToolStripStatusLabel1
+Handle: ColDataType
+Handle: Radio Button
+Handle: Transaction
+Handle: Erase LIST
+Handle: Font - GridFont
+Handle: HEADER HEIGHT
+Handle: txtComments/Property
+Handle: GetCellCheck
 
 -------------------------------------- FormClosedEventArgs ---------------------------------------------
     FormClosedEventArgs (x) => FormClosingEventArgs
